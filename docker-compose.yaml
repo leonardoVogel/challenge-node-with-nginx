@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  web:
+    build: ./nginx
+    image: leovogel/nginx
+    container_name: web
+    ports:
+      - "80:80"
+    networks:
+      - nginx-node
+    depends_on:
+      - app
+
+  app:
+    build: ./node
+    image: leovogel/node
+    container_name: app
+    networks:
+      - nginx-node
+      - mysql-node
+    depends_on:
+      - db
+
+  db:
+    image: mysql
+    container_name: db
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - mysql-node
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=nodedb
+
+networks:
+  nginx-node:
+    driver: bridge
+  mysql-node:
+    driver: bridge
