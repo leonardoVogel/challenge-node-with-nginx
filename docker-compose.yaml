@@ -6,7 +6,7 @@ services:
     image: leovogel/nginx
     container_name: web
     ports:
-      - "80:80"
+      - "8080:80"
     networks:
       - nginx-node
     depends_on:
@@ -16,6 +16,7 @@ services:
     build: ./node
     image: leovogel/node
     container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 25s docker-entrypoint.sh
     networks:
       - nginx-node
       - mysql-node
